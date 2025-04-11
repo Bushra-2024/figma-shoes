@@ -159,7 +159,7 @@ export default function Home() {
 								height={900}
 								className='mx-auto lg:mx-0'
 							/>
-							<div className='flex flex-row lg:flex-col  gap-5 -ml-[30%] mt-20'>
+							<div className='hidden lg:flex flex-row lg:flex-col gap-5 -ml-[30%] mt-20'>
 								<button className='bg-white text-[#57BFC1] px-6 py-3 rounded-md font-bold'>
 									Сделать заказ{' '}
 								</button>
