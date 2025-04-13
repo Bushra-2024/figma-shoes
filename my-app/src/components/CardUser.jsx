@@ -6,7 +6,6 @@ import Image from 'next/image'
 const CardUser = ({ e }) => {
 	return (
 		<div className='w-[300px] p-4 shadow-md'>
-			{/* Map over images if available */}
 			{e.images?.map(img => (
 				<Image
 					key={img.id}

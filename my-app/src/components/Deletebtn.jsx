@@ -11,7 +11,6 @@ const Deletebtn = ({id}) => {
 			await axios.delete(`${API}?id=${id}`)
 			location.reload()
 			// router.refresh()
-
 			// getData()
 		} catch (error) {
 			console.error(error);
