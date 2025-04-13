@@ -119,6 +119,7 @@ export default async function Home() {
 							className=''
 						/>
 					</div>
+					
 					<div className='lg:ml-[30%] mt-20'>
 						<Image
 							src='/Frame 246.png'
