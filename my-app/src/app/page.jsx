@@ -1,82 +1,21 @@
-'use client'
-import axios from 'axios'
-import { getFallbackRouteParams } from 'next/dist/server/request/fallback-params'
+import CardUser from '@/components/CardUser'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import AddUser from '@/components/AddUser'
+import axios from 'axios'
 const API = 'https://to-dos-api.softclub.tj/api/to-dos'
 
-export default function Home() {
-	const [data, setData] = useState()
-	const [name, setName] = useState('')
-	const [description, setDescription] = useState('')
-	const [image, setImage] = useState([])
-	const [add, setadd] = useState(false)
+export async function getData() {
+	try {
+		const { data } = await axios(API)
+		return data
+	} catch (error) {
+		console.error(error)
+	}
+}
 
-	const [nameE, setNameE] = useState('')
-	const [descriptionE, setDescriptionE] = useState('')
-	const [idx, setIdx] = useState('')
-	const [edit, setEdit] = useState(false)
-	const getData = async () => {
-		try {
-			const { data } = await axios.get(API)
-			setData(data.data)
-		} catch (error) {
-			console.error(error)
-		}
-	}
-	useEffect(() => {
-		getData()
-	}, [])
-	const addData = async () => {
-		const formData = new FormData()
-		formData.append('name', name)
-		formData.append('description', description)
-		for (let i = 0; i < image.length; i++) {
-			formData.append('images', image[i])
-		}
-		try {
-			await axios.post(API, formData)
-			getData()
-			setName('')
-			setDescription('')
-			setDescription('')
-			setImage([])
-			setadd(false)
-		} catch (error) {
-			console.error(error)
-		}
-	}
+export default async function Home() {
+	const data = await getData()
 
-	const deleteData = async(id) => {
-		try {
-			await axios.delete(`${API}?id=${id}`)
-		getData()
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
-	const editClick = (txt) => {
-		setEdit(true)
-		setNameE(txt.name)
-		setDescriptionE(txt.description)
-		setIdx(txt.id)
-	}
-	const editData = async () => {
-		try {
-		  await axios.put(`${API}`, {
-			 name: nameE,
-			 description: descriptionE,
-			 id: idx
-		  });
-		  setEdit(false);
-		  getData();
-		  setNameE('');
-		  setDescriptionE('');
-		} catch (error) {
-		  console.error(error);
-		}
-	 };
 	return (
 		<div className='max-w-[1400px] m-auto'>
 			<header className='flex items-center justify-between px-[10%] py-4 bg-white'>
@@ -159,7 +98,7 @@ export default function Home() {
 								height={900}
 								className='mx-auto lg:mx-0'
 							/>
-							<div className='flex flex-row lg:flex-col  gap-5 -ml-[30%] mt-20'>
+							<div className='hidden lg:flex flex-row lg:flex-col gap-5 -ml-[30%] mt-20'>
 								<button className='bg-white text-[#57BFC1] px-6 py-3 rounded-md font-bold'>
 									Сделать заказ{' '}
 								</button>
@@ -313,68 +252,18 @@ export default function Home() {
 					Товары в наличии на складе{' '}
 					<span className='font-bold'>в Москвее</span>
 				</h2>
-				<button
-					onClick={() => setadd(true)}
-					className='bg-[#57BFC1] text-white p-2 rounded-2xl mb-20'
-				>
-					add products +
-				</button>
-						{add && (
-					<>
-					<input type='text' value={name} onChange={(e)=> setName(e.target.value)} className='border border-[gray] mx-10' placeholder='add name' />
+			
 
-					<input type='text' value={description} onChange={(e)=> setDescription(e.target.value)} className='border border-[gray]' placeholder='add des' />
-
-					<input type="file" onChange={(e) => setImage(e.target.files)} multiple />
-					<button onClick={addData} className="bg-black text-white">done</button>
-					</>
-				)}
 				<div className='flex flex-wrap justify-center lg:justify-start items-center gap-10 lg:gap-10'>
-					{data?.map(el => (
-						<div key={el.id} className='p-4'>
-						{el.images.map(img => (
-								<div key={img.id}>
-									<Image
-										src={`https://to-dos-api.softclub.tj/images/${img.imageName}`}
-										alt='img'
-										width={250}
-										height={200}
-										className=' object-contain'
-									/>
-								</div>
+					<div>
+						<AddUser />
+						<div className='flex flex-wrap gap-6 justify-center'>
+							{data?.data?.map(e => (
+								<CardUser e={e} key={e.id} />
 							))}
-							
-							<h3 className='text-xk text-center font-semibold mt-2'>
-								{el.name}
-							</h3>
-							<p className='text-lg text-center  text-[gray]'>
-								{el.description}
-							</p>
-							<p className='mt-1 text-center '>
-								14.000₽{' '}
-								<del className='text-xs text-gray-500 ml-1'>17.000₽</del>
-							</p>
-
-							<div className='flex gap-2 mt-3 justify-center '>
-								<button onClick={() => deleteData(el.id)} className='bg-[#57BFC1] px-4 py-1 text-white rounded-full hover:cursor-pointer'>
-									delete
-								</button>
-								<button onClick={()=> editClick(el)} className='bg-[#57BFC1] px-4 py-1 text-white rounded-full hover:cursor-pointer'>
-									edit
-								</button>
-							</div>
 						</div>
-					))}
+					</div>
 				</div>
-				{edit && (
-					<>
-					<input type='text' value={nameE} onChange={(e)=> setNameE(e.target.value)} className='border border-[gray] mx-10' placeholder='add name' />
-
-					<input type='text' value={descriptionE} onChange={(e)=> setDescriptionE(e.target.value)} className='border border-[gray]' placeholder='add des' />
-
-					<button onClick={editData} className="bg-black text-white">done</button>
-					</>
-				)}
 			</section>
 
 			<section className=' py-16 lg:px-20 px-10'>
@@ -437,7 +326,6 @@ export default function Home() {
 						</div>
 					</div>
 					<div>
-						{' '}
 						<div className='bg-[#E1F5F6] rounded-2xl p-6 w-full  flex justify-between items-start shadow-sm mt-10'>
 							<div>
 								<h3 className='font-semibold text-lg mb-2'>
