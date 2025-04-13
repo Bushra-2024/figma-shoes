@@ -23,7 +23,7 @@ const EditUser = ({ id, initialName, initialDescription }) => {
   }
 
   return (
-    <div className='flex flex-col gap-2'>
+    <div className='flex flex-col items-center gap-2'>
       {edit ? (
         <>
           <input
@@ -40,7 +40,10 @@ const EditUser = ({ id, initialName, initialDescription }) => {
             className="border border-[gray] mx-10"
             placeholder='Add description'
           />
-       <button onClick={editData} className="bg-black text-white mt-2">
+          <button
+            onClick={editData}
+            className='bg-black text-white px-3 py-1 rounded'
+          >
             Done
           </button>
         </>
